@@ -70,6 +70,14 @@ class IoComponent implements MessageComponentInterface {
     }
 
     protected function handleCommands(CommandInterface $command = null) {
-        // loop through, do things
+        while ($command instanceof CommandInterface) {
+            try {
+                $newCommand = $command->execute($this);
+            } catch (\Exception $e) {
+                break;
+            }
+
+            $command = $newCommand;
+        }
     }
 }

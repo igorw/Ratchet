@@ -14,9 +14,11 @@ class Connection implements ConnectionInterface {
      */
     protected $_socket;
 
+/*
     public function __construct(SocketInterface $socket) {
         $this->_socket = $socket;
     }
+*/
 
     /**
      * @return int

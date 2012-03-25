@@ -84,13 +84,11 @@ class LibEvent implements TransportInterface {
         // 34: Seems to happen when I send a message to a closed socket (makes sense)
         // 65: Seems to be write timeout (removing timeout fixed this)
 
-        echo "Error: {$error}\n";
-
         event_buffer_disable($proxy->libevent->buffer, EV_READ);
         event_buffer_free($proxy->libevent->buffer);
         stream_socket_shutdown($proxy->libevent->socket, STREAM_SHUT_RDWR);
 
-        $this->_server->onClose($proxy);
+        ($error == 17 ? $this->_server->onClose($proxy) : $this->_server->onError($proxy));
         $this->_connections->detach($proxy);
     }
 }

@@ -3,7 +3,7 @@ namespace Ratchet\Tests\Component\Session;
 use Ratchet\Component\Session\SessionComponent;
 use Ratchet\Tests\Mock\NullMessageComponent;
 use Ratchet\Tests\Mock\MemorySessionHandler;
-use Ratchet\Resource\Connection;
+use Ratchet\Tests\Mock\Connection;
 use Ratchet\Tests\Mock\FakeSocket;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Guzzle\Http\Message\Request;

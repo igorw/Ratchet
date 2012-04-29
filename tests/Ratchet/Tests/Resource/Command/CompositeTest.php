@@ -1,14 +1,14 @@
 <?php
 namespace Ratchet\Tests\Resource\Command;
 use Ratchet\Resource\Command\Composite;
-use Ratchet\Resource\Connection;
+use Ratchet\Tests\Mock\Connection;
 use Ratchet\Tests\Mock\FakeSocket;
 use Ratchet\Resource\Command\Action\Null as NullAction;
 
 /**
  * @covers Ratchet\Resource\Command\Composite
  */
-class CompositeTestnope extends \PHPUnit_Framework_TestCase {
+class CompositeTest extends \PHPUnit_Framework_TestCase {
     protected $_comp;
 
     public function setUp() {

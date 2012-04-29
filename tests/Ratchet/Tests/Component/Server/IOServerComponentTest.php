@@ -29,7 +29,6 @@ class IOServerComponentTest extends \PHPUnit_Framework_TestCase {
 
         $this->_server->onOpen($conn);
 
-        // $this->_server->run($this->_catalyst);
         $msg = 'Hello World!';
         $this->_server->onMessage($conn, $msg);
 

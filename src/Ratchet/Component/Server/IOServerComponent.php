@@ -124,9 +124,7 @@ $conn->resourceId = uniqid();
      * {@inheritdoc}
      */
     public function onClose(ConnectionInterface $conn) {
-        $cmd = $this->_decorating->onClose($conn);
-
-        return $cmd;
+        return $this->_decorating->onClose($conn);
     }
 
     /**

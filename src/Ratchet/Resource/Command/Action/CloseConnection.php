@@ -19,13 +19,13 @@ class CloseConnection extends ActionTemplate {
 
             $rt = new Runtime($this->getConnection());
             $rt->setCommand(function(ConnectionInterface $conn, ComponentInterface $scope) {
-                $conn->getSocket()->close();
+                $conn->close();
             });
             $comp->enqueue($rt);
 
             return $comp;
         }
 
-        $this->getConnection()->getSocket()->close();
+        $this->getConnection()->close();
     }
 }

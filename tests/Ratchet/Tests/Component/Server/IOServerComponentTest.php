@@ -20,7 +20,6 @@ class IOServerComponentTest extends \PHPUnit_Framework_TestCase {
         $conn = new Connection;
 
         $this->_server->onOpen($conn);
-
         $this->assertSame($conn, $this->_decorated->last['onOpen'][0]);
     }
 

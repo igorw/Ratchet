@@ -21,7 +21,7 @@ class IOServerComponentTest extends \PHPUnit_Framework_TestCase {
 
         $this->_server->onOpen($conn);
 
-        $this->assertSame($conn, $this->_decorated->_conn_open);
+        $this->assertSame($conn, $this->_decorated->last['onOpen'][0]);
     }
 
     public function testOnMessageSendsToApp() {
@@ -32,6 +32,6 @@ class IOServerComponentTest extends \PHPUnit_Framework_TestCase {
         $msg = 'Hello World!';
         $this->_server->onMessage($conn, $msg);
 
-        $this->assertEquals($msg, $this->_decorated->_msg_recv);
+        $this->assertEquals($msg, $this->_decorated->last['onMessage'][1]);
     }
 }

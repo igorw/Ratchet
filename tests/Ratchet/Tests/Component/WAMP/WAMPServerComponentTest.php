@@ -1,8 +1,7 @@
 <?php
 namespace Ratchet\Tests\Component\WAMP;
 use Ratchet\Component\WAMP\WAMPServerComponent;
-use Ratchet\Resource\Connection;
-use Ratchet\Tests\Mock\FakeSocket;
+use Ratchet\Tests\Mock\Connection;
 use Ratchet\Tests\Mock\WAMPComponent as TestComponent;
 use Ratchet\Component\WAMP\Command\Action\CallResult;
 use Ratchet\Component\WAMP\Command\Action\CallError;

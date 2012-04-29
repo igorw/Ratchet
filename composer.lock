@@ -18,7 +18,7 @@
         {
             "package": "igorw/socket-server",
             "version": "dev-master",
-            "source-reference": "8d27abbe28c9c46ffb800a2a422a157b1806885c"
+            "source-reference": "7f44b923b390af7dadeb5b2f71cf454a19d08535"
         },
         {
             "package": "symfony/event-dispatcher",

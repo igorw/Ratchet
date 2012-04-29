@@ -49,7 +49,8 @@ class IOServerComponent implements MessageComponentInterface {
      * @todo See how exceptions are handled here - not sure if they'll break out of the closures
      */
     public function run($port, $address = '0.0.0.0') {
-        $server = new Server($address, $port);
+        $server = new Server($address, $port, new \Igorw\SocketServer\EventLoop\StreamSelectLoop);
+//        $server = new Server($address, $port);
         $that   = $this;
 
         gc_enable();
@@ -65,21 +66,29 @@ $conn->resourceId = uniqid();
             try {
                 $that->execute($that->onOpen($conn));
 
-                try {
-                    $conn->on('data', function($data) use ($conn, $that) {
+                $conn->on('data', function($data) use ($conn, $that) {
+                    try {
                         $that->execute($that->onMessage($conn, $data));
-                    });
+                    } catch (\Exception $e) {
+                        $that->execute($that->onError($conn, $e));
+                    }
+                });
 
-                    $conn->on('end', function() use ($conn, $that) {
+                $conn->on('end', function() use ($conn, $that) {
+                    try {
                         $that->execute($that->onClose($conn));
-                    });
+                    } catch (\Exception $e) {
+                        $that->execute($that->onError($conn, $e));
+                    }
+                });
 
-                    $conn->on('error', function($msg, $context) use ($conn) {
+                $conn->on('error', function($msg, $context) use ($conn, $that) {
+                    try {
                         throw new \Exception($msg);
-                    });
-                } catch (\Exception $re) {
-                    $that->execute($that->onError($conn, $e));
-                }
+                    } catch (\Exception $e) {
+                        $that->execute($that->onError($conn, $e));
+                    }
+                });
             } catch (\Exception $e) {
                 $that->execute($that->onError($conn, $e));
             }

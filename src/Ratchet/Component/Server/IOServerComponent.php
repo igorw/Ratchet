@@ -2,13 +2,14 @@
 namespace Ratchet\Component\Server;
 use Ratchet\Component\MessageComponentInterface;
 use Ratchet\Resource\ConnectionInterface;
+use Ratchet\Resource\Command\CommandSubscriberInterface;
 use Ratchet\Resource\Command\CommandInterface;
 use Ratchet\Component\Server\SocketServerAdapter\Server;
 
 /**
  * Creates an open-ended socket to listen on a port for incomming connections.  Events are delegated through this to attached applications
  */
-class IOServerComponent implements MessageComponentInterface {
+class IOServerComponent implements MessageComponentInterface, CommandSubscriberInterface {
     /**
      * The decorated application to send events to
      * @var Ratchet\Component\ComponentInterface
@@ -24,6 +25,11 @@ class IOServerComponent implements MessageComponentInterface {
 
     public function __construct(MessageComponentInterface $component) {
         $this->_decorating = $component;
+        $this->_decorating->subscribeCommand($this);
+    }
+
+    public function __destruct() {
+        $this->_decorating->unSubscribeCommand($this);
     }
 
     /**
@@ -96,6 +102,11 @@ $conn->resourceId = uniqid();
         $server->run();
     }
 
+    public function onCommand(CommandInterface $command)
+    {
+        $this->execute($command);
+    }
+
     /**
      * @param Ratchet\Resource\Command\CommandInterface
      */
@@ -140,5 +151,20 @@ $conn->resourceId = uniqid();
      */
     public function onError(ConnectionInterface $conn, \Exception $e) {
         return $this->_decorating->onError($conn, $e);
+    }
+
+    public function subscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->subscribeCommand($subscriber);
+    }
+
+    public function unSubscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->unSubscribeCommand($subscriber);
+    }
+
+    public function notifyCommand(CommandInterface $command)
+    {
+        return $this->_decorating->notifyCommand($command);
     }
 }

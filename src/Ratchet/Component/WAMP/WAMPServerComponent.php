@@ -3,6 +3,7 @@ namespace Ratchet\Component\WAMP;
 use Ratchet\Component\WebSocket\WebSocketComponentInterface;
 use Ratchet\Resource\ConnectionInterface;
 use Ratchet\Resource\Command\Composite;
+use Ratchet\Resource\Command\CommandSubscriberInterface;
 use Ratchet\Resource\Command\CommandInterface;
 use Ratchet\Resource\Command\Factory as CmdFactory;
 use Ratchet\Component\WAMP\Command\Action\Prefix;
@@ -10,7 +11,7 @@ use Ratchet\Component\WAMP\Command\Action\Welcome;
 
 /**
  * WebSocket Application Messaging Protocol
- * 
+ *
  * @link http://wamp.ws/spec
  * @link https://github.com/oberstet/AutobahnJS
  *
@@ -190,5 +191,20 @@ class WAMPServerComponent implements WebSocketComponentInterface {
      */
     public function onError(ConnectionInterface $conn, \Exception $e) {
         return $this->_decorating->onError($conn, $e);
+    }
+
+    public function subscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->subscribeCommand($subscriber);
+    }
+
+    public function unSubscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->unSubscribeCommand($subscriber);
+    }
+
+    public function notifyCommand(CommandInterface $command)
+    {
+        return $this->_decorating->notifyCommand($command);
     }
 }

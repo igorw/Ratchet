@@ -3,6 +3,7 @@ namespace Ratchet\Component\WebSocket;
 use Ratchet\Component\MessageComponentInterface;
 use Ratchet\Resource\ConnectionInterface;
 use Ratchet\Resource\Command\Factory;
+use Ratchet\Resource\Command\CommandSubscriber;
 use Ratchet\Resource\Command\CommandInterface;
 use Ratchet\Resource\Command\Action\SendMessage;
 use Guzzle\Http\Message\RequestInterface;
@@ -46,9 +47,12 @@ class WebSocketComponent implements MessageComponentInterface {
      */
     public $accepted_subprotocols = array();
 
+    private $commandSubscribers;
+
     public function __construct(MessageComponentInterface $component) {
         $this->_decorating = $component;
         $this->_factory    = new Factory;
+        $this->commandSubscribers = new \SplObjectStorage;
     }
 
     /**
@@ -100,7 +104,8 @@ class WebSocketComponent implements MessageComponentInterface {
             $comp->enqueue($this->_factory->newCommand('SendMessage', $from)->setMessage($header));
             $comp->enqueue($this->prepareCommand($this->_decorating->onOpen($from, $msg))); // Need to send headers/handshake to application, let it have the cookies, etc
 
-            return $comp;
+            $this->notifyCommand($comp);
+            return;
         }
 
         if (!isset($from->WebSocket->message)) {
@@ -130,7 +135,25 @@ class WebSocketComponent implements MessageComponentInterface {
             $cmds = $this->prepareCommand($this->_decorating->onMessage($from, (string)$from->WebSocket->message));
             unset($from->WebSocket->message);
 
+            $this->notifyCommand($cmds);
             return $cmds;
+        }
+    }
+
+    public function subscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        $this->commandSubscribers->attach($subscriber);
+    }
+
+    public function unSubscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        $this->commandSubscribers->detach($subscriber);
+    }
+
+    public function notifyCommand(CommandInterface $command)
+    {
+        foreach ($this->commandSubscribers as $subscriber) {
+            $subscriber->onCommand($command);
         }
     }
 
@@ -156,7 +179,9 @@ class WebSocketComponent implements MessageComponentInterface {
      */
     protected function prepareCommand(CommandInterface $command = null) {
         $cache = array();
-        return $this->mungCommand($command, $cache);
+        $finalCommand = $this->mungCommand($command, $cache);
+
+        $this->notifyCommand($finalCommand);
     }
 
     /**

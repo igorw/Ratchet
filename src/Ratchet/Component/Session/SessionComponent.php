@@ -2,6 +2,8 @@
 namespace Ratchet\Component\Session;
 use Ratchet\Component\MessageComponentInterface;
 use Ratchet\Resource\ConnectionInterface;
+use Ratchet\Resource\Command\CommandSubscriberInterface;
+use Ratchet\Resource\Command\CommandInterface;
 use Ratchet\Component\Session\Storage\VirtualSessionStorage;
 use Ratchet\Component\Session\Serialize\HandlerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -107,6 +109,21 @@ class SessionComponent implements MessageComponentInterface {
      */
     function onError(ConnectionInterface $conn, \Exception $e) {
         return $this->_app->onError($conn, $e);
+    }
+
+    public function subscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->subscribeCommand($subscriber);
+    }
+
+    public function unSubscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->unSubscribeCommand($subscriber);
+    }
+
+    public function notifyCommand(CommandInterface $command)
+    {
+        return $this->_decorating->notifyCommand($command);
     }
 
     /**

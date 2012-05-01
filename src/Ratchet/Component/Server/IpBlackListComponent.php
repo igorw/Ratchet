@@ -3,6 +3,8 @@ namespace Ratchet\Component\Server;
 use Ratchet\Component\MessageComponentInterface;
 use Ratchet\Resource\ConnectionInterface;
 use Ratchet\Resource\Command\Action\CloseConnection;
+use Ratchet\Resource\Command\CommandSubscriberInterface;
+use Ratchet\Resource\Command\CommandInterface;
 
 class IpBlackListComponent implements MessageComponentInterface {
     /**
@@ -103,5 +105,20 @@ class IpBlackListComponent implements MessageComponentInterface {
      */
     function onError(ConnectionInterface $conn, \Exception $e) {
         return $this->_decorating->onError($conn, $e);
+    }
+
+    public function subscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->subscribeCommand($subscriber);
+    }
+
+    public function unSubscribeCommand(CommandSubscriberInterface $subscriber)
+    {
+        return $this->_decorating->unSubscribeCommand($subscriber);
+    }
+
+    public function notifyCommand(CommandInterface $command)
+    {
+        return $this->_decorating->notifyCommand($command);
     }
 }
